@@ -37,7 +37,7 @@ def stemming_text(text):
 
     return processed_text.strip()
 
-def proproess_text(text):
+def preprocess_text(text):
     text = text.lower()
     text = text.translate(str.maketrans('','',string.punctuation))
     text = remove_stopwords(text)
@@ -47,8 +47,8 @@ def proproess_text(text):
     return text
 
 def predict_spam(text):
-    preprocessed_text = proproess_text(text)
-    arr = vectorizer.transform([preprocessed_text])
+    preprocess_text = preprocess_text(text)
+    arr = vectorizer.transform([preprocess_text])
     pred = model.predict(arr)
     prob = np.max(model.predict_proba(arr))
     prob = round(prob,3)

@@ -47,9 +47,9 @@ def preprocess_text(text):
     return text
 
 def predict_spam(text):
-    preprocess_text = preprocess_text(text)
-    arr = vectorizer.transform([preprocess_text])
+    processed_text = preprocess_text(text)  # ✅ FIXED: Renamed variable to avoid confusion
+    arr = vectorizer.transform([processed_text])
     pred = model.predict(arr)
     prob = np.max(model.predict_proba(arr))
-    prob = round(prob,3)
-    return pred[0],prob
+    prob = round(prob, 3)
+    return pred[0], prob

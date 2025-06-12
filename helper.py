@@ -9,47 +9,34 @@ stop_words = stopwords.words('english')
 from nltk.stem.snowball import SnowballStemmer
 stemmer = SnowballStemmer("english")
 import numpy as np
+
+# Load the pre-trained model and vectorizer
 model_path = 'model.joblib'
 model = joblib.load(model_path)
 vectorizer_path = 'vectorizer.joblib'
 vectorizer = joblib.load(vectorizer_path)
 
 def remove_stopwords(text):
-    filtered_text = ''
-    for i in text.split():
-        if i not in stop_words:
-            filtered_text += ' ' + i
-    return filtered_text.strip()
+    return ' '.join([word for word in text.split() if word not in stop_words])
 
 def remove_words_less_than_two_chars(text):
-    filtered_text = ''
-    for i in text.split():
-        if len(i) > 2:
-            filtered_text += ' ' + i
-    return filtered_text.strip()
+    return ' '.join([word for word in text.split() if len(word) > 2])
 
 def stemming_text(text):
-    processed_text = ''
-
-    for i in text.split():
-        stem_word = stemmer.stem(i)
-        processed_text += ' ' + stem_word
-
-    return processed_text.strip()
+    return ' '.join([stemmer.stem(word) for word in text.split()])
 
 def preprocess_text(text):
     text = text.lower()
-    text = text.translate(str.maketrans('','',string.punctuation))
+    text = text.translate(str.maketrans('', '', string.punctuation))
     text = remove_stopwords(text)
     text = remove_words_less_than_two_chars(text)
     text = stemming_text(text)
-    # text = spell_correction(text)
     return text
 
 def predict_spam(text):
-    preprocess_text = preprocess_text(text)
-    arr = vectorizer.transform([preprocess_text])
+    processed_text = preprocess_text(text)  # ✅ Variable renamed to processed_text
+    arr = vectorizer.transform([processed_text])
     pred = model.predict(arr)
     prob = np.max(model.predict_proba(arr))
-    prob = round(prob,3)
-    return pred[0],prob
+    prob = round(prob, 3)
+    return pred[0], prob
